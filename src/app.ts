@@ -1,36 +1,30 @@
-//1. import & setup environment
-import Fastify from "fastify";
-import * as dotenv from "dotenv"; //read file .env di root project, lalu inject isinya ke process.env
+import cors from '@fastify/cors';
+import helmet from '@fastify/helmet';
+import type { JsonSchemaToTsProvider } from '@fastify/type-provider-json-schema-to-ts';
+import Fastify from 'fastify';
+import { errorHandler, notFoundHandler } from './common/handlers/error-handler';
+import { env } from './config/env';
 
 
-//2. Ekseskusi di awal, agar semua variabl environment sudah available sebelum kode lain berjalan
-dotenv.config(); 
+export async function createApp() {
+  const app = Fastify({
+    // Fastify pake logger `pino` bawaan, sebagai pengganti `morgan` kalo versi Express.
+    // Di off waktu mode test (NODE_ENV=test) supaya output test bersih.
+    logger: env.NODE_ENV !== 'test',
+  }).withTypeProvider<JsonSchemaToTsProvider>();
 
-//3. Create object instance fastify
-const app = Fastify({
-    logger: true, //pino bawaan fastify di aktifkan, semua log request, error akan otomatis tampil di console with json format.
-});
+  await app.register(helmet);
+  await app.register(cors);
 
+  // Body parsing JSON sudah bawaan Fastify (`content-type: application/json`),
+  // tidak perlu plugin/middleware tambahan seperti `express.json()`.
 
-//4. Health Check : untuk cek apakah service masih running, biasanya dipake di container orchestrator
-app.get("/health", async () => {
-    return { status: "OK", timestamp: new Date() };
-});
+  app.setNotFoundHandler(notFoundHandler);
+  app.setErrorHandler(errorHandler);
 
-//5. Config Server
-const start = async () => {
-    try {
-        // using port 3002, karena 3001 untuk auth-service-api        
-        const port = Number(process.env.PORT) || 3002; 
-        const host = process.env.HOST || "0.0.0.0";
+  app.get('/health', async () => ({ success: true, message: 'hr-service-api is healthy' }));
 
-        await app.listen({ port, host });
-        console.log(`HR Service running on http://localhost:${port}`);
-    } catch (err) {
-        app.log.error(err);
-        process.exit(1);
-    }
-};
+  await app.register(apiRoutes, { prefix: env.API_PREFIX });
 
-//6. Running Start Server
-start();
+  return app;
+}
