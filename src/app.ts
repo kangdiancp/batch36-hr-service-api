@@ -4,6 +4,7 @@ import type { JsonSchemaToTsProvider } from '@fastify/type-provider-json-schema-
 import Fastify from 'fastify';
 import { errorHandler, notFoundHandler } from './common/handlers/error-handler';
 import { env } from './config/env';
+import { apiRoutes } from './routes';
 
 
 export async function createApp() {

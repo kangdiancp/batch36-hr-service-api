@@ -1,4 +1,4 @@
-import {pgSchema, serial, varchar, foreignKey, char, integer, numeric, index, unique, check, date, timestamp, uniqueIndex, boolean } from "drizzle-orm/pg-core"
+import { pgSchema, serial, varchar, foreignKey, char, integer, numeric, index, unique, check, date, timestamp, uniqueIndex, boolean } from "drizzle-orm/pg-core"
 import { sql } from "drizzle-orm"
 
 export const hr = pgSchema("hr");
@@ -15,10 +15,10 @@ export const countries = hr.table("countries", {
 	regionId: integer("region_id").notNull(),
 }, (table) => [
 	foreignKey({
-			columns: [table.regionId],
-			foreignColumns: [regions.regionId],
-			name: "fk_countries_region"
-		}).onUpdate("cascade").onDelete("cascade"),
+		columns: [table.regionId],
+		foreignColumns: [regions.regionId],
+		name: "fk_countries_region"
+	}).onUpdate("cascade").onDelete("cascade"),
 ]);
 
 export const locations = hr.table("locations", {
@@ -30,10 +30,10 @@ export const locations = hr.table("locations", {
 	countryId: char("country_id", { length: 2 }).notNull(),
 }, (table) => [
 	foreignKey({
-			columns: [table.countryId],
-			foreignColumns: [countries.countryId],
-			name: "fk_locations_country"
-		}).onUpdate("cascade").onDelete("cascade"),
+		columns: [table.countryId],
+		foreignColumns: [countries.countryId],
+		name: "fk_locations_country"
+	}).onUpdate("cascade").onDelete("cascade"),
 ]);
 
 export const departments = hr.table("departments", {
@@ -42,17 +42,17 @@ export const departments = hr.table("departments", {
 	locationId: integer("location_id"),
 }, (table) => [
 	foreignKey({
-			columns: [table.locationId],
-			foreignColumns: [locations.locationId],
-			name: "fk_departments_location"
-		}).onUpdate("cascade").onDelete("cascade"),
+		columns: [table.locationId],
+		foreignColumns: [locations.locationId],
+		name: "fk_departments_location"
+	}).onUpdate("cascade").onDelete("cascade"),
 ]);
 
 export const jobs = hr.table("jobs", {
 	jobId: serial("job_id").primaryKey().notNull(),
 	jobTitle: varchar("job_title", { length: 35 }).notNull(),
-	minSalary: numeric("min_salary", { precision: 8, scale:  2 }),
-	maxSalary: numeric("max_salary", { precision: 8, scale:  2 }),
+	minSalary: numeric("min_salary", { precision: 8, scale: 2 }),
+	maxSalary: numeric("max_salary", { precision: 8, scale: 2 }),
 });
 
 export const employees = hr.table("employees", {
@@ -63,7 +63,7 @@ export const employees = hr.table("employees", {
 	phoneNumber: varchar("phone_number", { length: 20 }),
 	hireDate: date("hire_date").notNull(),
 	jobId: integer("job_id").notNull(),
-	salary: numeric({ precision: 8, scale:  2 }).notNull(),
+	salary: numeric({ precision: 8, scale: 2 }).notNull(),
 	managerId: integer("manager_id"),
 	departmentId: integer("department_id"),
 	employmentStatus: varchar("employment_status", { length: 20 }).default('ACTIVE').notNull(),
@@ -74,20 +74,20 @@ export const employees = hr.table("employees", {
 }, (table) => [
 	index("idx_employees_dept_status").using("btree", table.departmentId.asc().nullsLast().op("text_ops"), table.employmentStatus.asc().nullsLast().op("int4_ops"), table.employeeId.asc().nullsLast().op("text_ops")),
 	foreignKey({
-			columns: [table.jobId],
-			foreignColumns: [jobs.jobId],
-			name: "fk_employees_job"
-		}).onUpdate("cascade").onDelete("restrict"),
+		columns: [table.jobId],
+		foreignColumns: [jobs.jobId],
+		name: "fk_employees_job"
+	}).onUpdate("cascade").onDelete("restrict"),
 	foreignKey({
-			columns: [table.departmentId],
-			foreignColumns: [departments.departmentId],
-			name: "fk_employees_dept"
-		}).onUpdate("cascade").onDelete("set null"),
+		columns: [table.departmentId],
+		foreignColumns: [departments.departmentId],
+		name: "fk_employees_dept"
+	}).onUpdate("cascade").onDelete("set null"),
 	foreignKey({
-			columns: [table.managerId],
-			foreignColumns: [table.employeeId],
-			name: "fk_employees_manager"
-		}).onUpdate("cascade").onDelete("set null"),
+		columns: [table.managerId],
+		foreignColumns: [table.employeeId],
+		name: "fk_employees_manager"
+	}).onUpdate("cascade").onDelete("set null"),
 	unique("uq_employees_email").on(table.email),
 	check("ck_employees_salary", sql`salary > (0)::numeric`),
 	check("ck_employees_status", sql`(employment_status)::text = ANY ((ARRAY['ACTIVE'::character varying, 'ON_LEAVE'::character varying, 'SUSPENDED'::character varying, 'RESIGNED'::character varying, 'TERMINATED'::character varying])::text[])`),
@@ -109,10 +109,10 @@ export const employeeBankAccounts = hr.table("employee_bank_accounts", {
 }, (table) => [
 	uniqueIndex("uq_employee_bank_accounts_one_primary").using("btree", table.employeeId.asc().nullsLast().op("int4_ops")).where(sql`(is_primary = true)`),
 	foreignKey({
-			columns: [table.employeeId],
-			foreignColumns: [employees.employeeId],
-			name: "fk_employee_bank_accounts_employee"
-		}).onUpdate("cascade").onDelete("cascade"),
+		columns: [table.employeeId],
+		foreignColumns: [employees.employeeId],
+		name: "fk_employee_bank_accounts_employee"
+	}).onUpdate("cascade").onDelete("cascade"),
 ]);
 
 export const dependents = hr.table("dependents", {
@@ -123,8 +123,8 @@ export const dependents = hr.table("dependents", {
 	employeeId: integer("employee_id").notNull(),
 }, (table) => [
 	foreignKey({
-			columns: [table.employeeId],
-			foreignColumns: [employees.employeeId],
-			name: "fk_dependents_emp"
-		}).onUpdate("cascade").onDelete("cascade"),
+		columns: [table.employeeId],
+		foreignColumns: [employees.employeeId],
+		name: "fk_dependents_emp"
+	}).onUpdate("cascade").onDelete("cascade"),
 ]);
