@@ -3,16 +3,14 @@ import type { regions } from '../../db/schema';
 export type RegionRow = typeof regions.$inferSelect;
 export type NewRegionRow = typeof regions.$inferInsert;
 
-// gambaran tanpa inferSelect
-/* interface RegionRows{
-    regionId : number;
-    regionName : string;
+
+/*
+//kalo ga gunakan #inferSelect, kita harus bikin interface, jika ada perubahan kolom di schema.ts, kita harus update
+//juga interface nya
+
+interface RegionRow  {
+  regionId: number;        // notNull() → required
+  regionName: string | null; // tidak ada notNull() → nullable
 }
 
-interface NewRegionRows{
-    regionName : string;
-}
-
-interface Employee{
-    empId : number;
-} */
+*/

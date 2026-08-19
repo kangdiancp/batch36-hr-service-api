@@ -20,7 +20,7 @@ async function bootstrap(): Promise<void> {
     await app.close();
 
     await pool.end();
-    console.log('Pool database ditutup. Sampai jumpa!');
+    console.log('Pool database ditutup. See you!');
     process.exit(0);
   };
 

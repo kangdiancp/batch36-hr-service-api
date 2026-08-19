@@ -8,18 +8,36 @@ import {
     updateRegionBodySchema,
 } from './regions.schema';
 
+/**
+ * Endpoint URL : 
+ * # 1. GET LIST
+curl -X GET "http://localhost:3000/api/hr/regions?page=1&limit=10"
+
+# 2. CREATE
+curl -X POST "http://localhost:3000/api/hr/regions" \
+  -H "Content-Type: application/json" \
+  -d '{"regionName": "Southeast Asia"}'
+
+# 3. UPDATE
+curl -X PATCH "http://localhost:3000/api/hr/regions/1" \
+  -H "Content-Type: application/json" \
+  -d '{"regionName": "East Asia"}'
+
+# 4. DELETE
+curl -X DELETE "http://localhost:3000/api/hr/regions/1"
+
+# 5. GET DETAIL
+curl -X GET "http://localhost:3000/api/hr/regions/1?includeCountries=true"
+ * 
+ */
+
 export const regionRoutes: FastifyPluginAsync = async (fastify) => {
+
     fastify.get(
         '/',
         { schema: { querystring: listRegionQuerySchema } },
         regionController.listRegions,
     );
-
-    /* fastify.get(
-        '/:id',
-        { schema: { params: regionIdParamSchema } },
-        regionController.getRegion,
-    ); */
 
     fastify.post(
         '/',

@@ -4,9 +4,7 @@ import * as regionRepository from './regions.repository';
 import type { CreateRegionInput, ListRegionQuery, UpdateRegionInput } from './regions.schema';
 import type { RegionRow } from './regions.types';
 
-export async function listRegions(
-  filter: ListRegionQuery,
-): Promise<{ items: RegionRow[]; pagination: Pagination }> {
+export async function listRegions(filter: ListRegionQuery): Promise<{ items: RegionRow[]; pagination: Pagination }> {
   const { rows, total } = await regionRepository.findAll(filter);
 
   return {
@@ -39,7 +37,7 @@ export async function getRegionWithCountries(id: number) {
 export async function createRegion(input: CreateRegionInput): Promise<RegionRow> {
   return regionRepository.create({
     ...input,
-    region_name: input.region_name.trim(),
+    regionName: input.regionName.trim(),
   });
 }
 
@@ -50,7 +48,7 @@ export async function updateRegion(id: number, input: UpdateRegionInput): Promis
   }
 
   const updated = await regionRepository.update(id, {
-    region_name: input.region_name,
+    regionName: input.regionName,
   });
 
   if (!updated) {

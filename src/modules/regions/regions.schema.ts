@@ -1,55 +1,39 @@
-import type { FromSchema } from 'json-schema-to-ts';
-
-export const regionIdParamSchema = {
-    type: 'object',
-    properties: {
-        id: { type: 'integer', minimum: 1 },
-    },
-    required: ['id'],
-    additionalProperties: false,
-} as const;
+import { createSelectSchema } from 'drizzle-typebox'
+import { Type, type Static } from '@sinclair/typebox'
+import { regions } from '../../db/schema'
 
 
-export const regionDetailQuerySchema = {
-  type: 'object',
-  properties: {
-    include: { type: 'string', enum: ['countries'] },
-  },
-  additionalProperties: false,
-} as const;
+export const regionSchema = createSelectSchema(regions)
+export type Region = Static<typeof regionSchema>
 
-export const createRegionBodySchema = {
-    type: 'object',
-    properties: {
-        region_name: { type: 'string', minLength: 1, maxLength: 25, pattern: '\\S' },
-    },
-    required: ['region_name'],
-    additionalProperties: false,
-} as const;
 
-export const updateRegionBodySchema = {
-    type: 'object',
-    properties: {
-        region_name: { type: 'string', minLength: 1, maxLength: 25, pattern: '\\S' },
-    },
-    minProperties: 1,
-    additionalProperties: false,
-} as const;
+export const createRegionBodySchema = Type.Object({
+  regionName: Type.String({ minLength: 1, maxLength: 25 }),
+}, { additionalProperties: false })
+export type CreateRegionInput = Static<typeof createRegionBodySchema>
 
-export const listRegionQuerySchema = {
-    type: 'object',
-    properties: {
-        page: { type: 'integer', minimum: 1, default: 1 },
-        limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
-        search: { type: 'string', minLength: 1 },
-    },
-    additionalProperties: false,
-} as const;
+export const updateRegionBodySchema = Type.Object({
+  regionName: Type.Optional(Type.String({ minLength: 1, maxLength: 25 })),
+}, { additionalProperties: false })
+export type UpdateRegionInput = Static<typeof updateRegionBodySchema>
 
-export type RegionIdParam = FromSchema<typeof regionIdParamSchema>;
-export type CreateRegionInput = FromSchema<typeof createRegionBodySchema>;
-export type UpdateRegionInput = FromSchema<typeof updateRegionBodySchema>;
-export type ListRegionQuery = FromSchema<typeof listRegionQuerySchema> &
-    Required<Pick<FromSchema<typeof listRegionQuerySchema>, 'page' | 'limit'>>;
-//include countries
-export type RegionDetailQuery = FromSchema<typeof regionDetailQuerySchema>;
+export const regionIdParamSchema = Type.Object({
+  id: Type.Integer({ minimum: 1 }),
+})
+export type RegionIdParam = Static<typeof regionIdParamSchema>
+
+
+export const listRegionQuerySchema = Type.Object({
+  page: Type.Integer({ minimum: 1, default: 1 }),
+  limit: Type.Integer({ minimum: 1, maximum: 100, default: 20 }),
+  search: Type.Optional(Type.String({ maxLength: 25 })),
+})
+export type ListRegionQuery = Static<typeof listRegionQuerySchema>
+
+
+// Query — detail (?include=countries)
+
+export const regionDetailQuerySchema = Type.Object({
+  include: Type.Optional(Type.Literal('countries')),
+})
+export type RegionDetailQuery = Static<typeof regionDetailQuerySchema>

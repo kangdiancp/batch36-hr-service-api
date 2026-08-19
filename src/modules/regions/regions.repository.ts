@@ -19,7 +19,7 @@ export async function findAll(filter: ListRegionQuery): Promise<{ rows: RegionRo
             .select()
             .from(regions)
             .where(whereClause)
-            .limit(limit) //pageSize
+            .limit(limit)
             .offset(offset),
         db.select({ total: count() }).from(regions).where(whereClause),
     ]);
@@ -36,7 +36,7 @@ export async function create(input: CreateRegionInput): Promise<RegionRow> {
     const [row] = await db
         .insert(regions)
         .values({
-            regionName: input.region_name,
+            regionName: input.regionName,
         })
         .returning();
     return row!;
@@ -46,7 +46,7 @@ export async function update(id: number, input: UpdateRegionInput): Promise<Regi
     const [row] = await db
         .update(regions)
         .set({
-            regionName: input.region_name,
+            regionName: input.regionName,
         })
         .where(eq(regions.regionId, id))
         .returning();
@@ -62,27 +62,27 @@ export async function remove(id: number): Promise<boolean> {
 }
 
 export async function findByIdWithCountries(id: number) {
-    const rows = await db
-        .select({
-            regionId: regions.regionId,
-            regionName: regions.regionName,
-            country: {
-                countryId: countries.countryId,
-                countryName: countries.countryName,
-            },
-        })
-        .from(regions)
-        .leftJoin(countries, eq(countries.regionId, regions.regionId))
-        .where(eq(regions.regionId, id));
+  const rows = await db
+    .select({
+      regionId: regions.regionId,
+      regionName: regions.regionName,
+      country: {
+        countryId: countries.countryId,
+        countryName: countries.countryName,
+      },
+    })
+    .from(regions)
+    .leftJoin(countries, eq(countries.regionId, regions.regionId))
+    .where(eq(regions.regionId, id));
 
-    if (rows.length === 0) return null;
+  if (rows.length === 0) return null;
 
 
-    return {
-        regionId: rows[0].regionId,
-        regionName: rows[0].regionName,
-        countries: rows
-            .filter((r) => r.country?.countryId !== null)
-            .map((r) => r.country),
-    };
+  return {
+    regionId: rows[0].regionId,
+    regionName: rows[0].regionName,
+    countries: rows
+      .filter((r) => r.country?.countryId !== null)
+      .map((r) => r.country),
+  };
 }
