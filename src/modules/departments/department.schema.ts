@@ -4,7 +4,7 @@ import { departments } from '../../db/schema'
 
 //for select
 export const departmentSchema = createSelectSchema(departments)
-export type Department = Static<typeof departmentSchema>
+export type Department = Static<typeof departmentSchema> 
 
 //for create
 export const createDepartmentBodySchema = Type.Object({
