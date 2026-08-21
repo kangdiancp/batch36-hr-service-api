@@ -22,10 +22,11 @@ export const regionIdParamSchema = Type.Object({
 })
 export type RegionIdParam = Static<typeof regionIdParamSchema>
 
-
+//"http://localhost:3000/api/hr/regions"
+// page :1, limit:20, search :null
 export const listRegionQuerySchema = Type.Object({
   page: Type.Integer({ minimum: 1, default: 1 }),
-  limit: Type.Integer({ minimum: 1, maximum: 100, default: 20 }),
+  limit: Type.Integer({ minimum: 1, maximum: 100, default: 5 }),
   search: Type.Optional(Type.String({ maxLength: 25 })),
 })
 export type ListRegionQuery = Static<typeof listRegionQuerySchema>

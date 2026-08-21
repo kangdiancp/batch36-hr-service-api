@@ -1,4 +1,4 @@
-import { createSelectSchema } from 'drizzle-typebox'
+import { createSelectSchema,createInsertSchema,CreateUpdateSchema } from 'drizzle-typebox'
 import { Type, type Static } from '@sinclair/typebox'
 import { departments } from '../../db/schema'
 

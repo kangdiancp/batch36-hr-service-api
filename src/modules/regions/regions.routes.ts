@@ -32,7 +32,9 @@ curl -X GET "http://localhost:3000/api/hr/regions/1?includeCountries=true"
  */
 
 export const regionRoutes: FastifyPluginAsync = async (fastify) => {
-
+    //"http://localhost:3000/api/hr/regions?page=1&limit=10&search=an"
+    //"http://localhost:3000/api/hr/regions?page=1&limit=10"
+    //"http://localhost:3000/api/hr/regions"
     fastify.get(
         '/',
         { schema: { querystring: listRegionQuerySchema } },

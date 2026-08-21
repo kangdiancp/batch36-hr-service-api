@@ -9,6 +9,8 @@ import type {
   UpdateRegionInput,
 } from './regions.schema';
 
+
+// "http://localhost:3002/api/hr/regions?page=1&limit=10&search=Asia"
 export async function listRegions(request: FastifyRequest<{ Querystring: ListRegionQuery }>,reply: FastifyReply)
 : Promise<void> {
   const { items, pagination } = await regionService.listRegions(request.query);
