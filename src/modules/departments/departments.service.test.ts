@@ -53,6 +53,7 @@ describe('departments.service', () => {
 
   describe('getDepartmentById', () => {
     it('return department if found', async () => {
+      //arrage
       mockedRepo.findById.mockResolvedValue(sampleDepartment)
 
       const result = await departmentService.getDepartmentById(1)

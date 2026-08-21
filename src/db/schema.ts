@@ -72,7 +72,7 @@ export const employees = hr.table("employees", {
 	createdAt: timestamp("created_at", { mode: 'string' }).default(sql`CURRENT_TIMESTAMP`).notNull(),
 	updatedAt: timestamp("updated_at", { mode: 'string' }).default(sql`CURRENT_TIMESTAMP`).notNull(),
 }, (table) => [
-	index("idx_employees_dept_status").using("btree", table.departmentId.asc().nullsLast().op("text_ops"), table.employmentStatus.asc().nullsLast().op("int4_ops"), table.employeeId.asc().nullsLast().op("text_ops")),
+	index("idx_employees_dept_status").using("btree", table.departmentId.asc().nullsLast().op("int4_ops"), table.employmentStatus.asc().nullsLast().op("text_ops"), table.employeeId.asc().nullsLast().op("int4_ops")),
 	foreignKey({
 		columns: [table.jobId],
 		foreignColumns: [jobs.jobId],
