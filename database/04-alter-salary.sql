@@ -20,8 +20,6 @@ ALTER COLUMN employment_status TYPE varchar(25),
 ALTER COLUMN employment_type TYPE varchar(25);
 
 
-
-
-
 ALTER TABLE hr.jobs 
+ALTER COLUMN min_salary TYPE NUMERIC(15, 2),
 ALTER COLUMN max_salary TYPE NUMERIC(15, 2);
