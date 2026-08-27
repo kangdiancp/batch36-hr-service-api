@@ -78,13 +78,7 @@ export async function updateEmployee(id: number, input: UpdateEmployeeInput): Pr
   return updated;
 }
 
-/**
- * CATATAN: menghapus employee akan CASCADE ke dependents, employee_bank_accounts,
- * dan employee_files (semua onDelete: cascade — ikut terhapus). Employee lain
- * yang punya managerId ke sini akan otomatis di-set NULL (onDelete: set null).
- * Kalau kamu butuh konfirmasi ekstra sebelum hapus (mengingat efek berantai
- * ini), tambahkan pengecekan/warning di controller sebelum panggil ini.
- */
+
 export async function deleteEmployee(id: number): Promise<void> {
   const existing = await employeeRepository.findById(id);
   if (!existing) {
