@@ -29,9 +29,7 @@ export async function getEmployeeById(id: number): Promise<EmployeeApiRow> {
 }
 
 export async function createEmployee(input: CreateEmployeeInput): Promise<EmployeeApiRow> {
-  // ck_employees_termination_date: terminationDate >= hireDate. Cross-field,
-  // tidak bisa divalidasi lewat JSON Schema — dicek manual di sini SEBELUM
-  // insert, supaya error-nya jelas (bukan cuma "DB constraint violation").
+
   if (input.termination_date && input.termination_date < input.hire_date) {
     throw ApiError.badRequest('termination_date tidak boleh lebih awal dari hire_date');
   }
@@ -55,8 +53,7 @@ export async function updateEmployee(id: number, input: UpdateEmployeeInput): Pr
     throw ApiError.badRequest('Employee tidak bisa menjadi manager untuk dirinya sendiri');
   }
 
-  // Cross-field date check — pakai nilai baru kalau dikirim, kalau tidak
-  // fallback ke nilai existing (karena PATCH bisa cuma kirim salah satu).
+
   const effectiveHireDate = input.hire_date ?? existing.hireDate;
   const effectiveTerminationDate =
     input.termination_date !== undefined ? input.termination_date : existing.terminationDate;
