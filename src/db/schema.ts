@@ -60,7 +60,7 @@ export const employees = hr.table("employees", {
 	firstName: varchar("first_name", { length: 20 }),
 	lastName: varchar("last_name", { length: 25 }).notNull(),
 	email: varchar({ length: 100 }).notNull(),
-	phoneNumber: varchar("phone_number", { length: 20 }),
+	phoneNumber: varchar("phone_number", { length: 25 }),
 	hireDate: date("hire_date").notNull(),
 	jobId: integer("job_id").notNull(),
 	salary: numeric({ precision: 8, scale: 2 }).notNull(),
