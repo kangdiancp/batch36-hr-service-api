@@ -6,6 +6,11 @@ import { errorHandler, notFoundHandler } from './common/handlers/error-handler';
 import { env } from './config/env';
 import { apiRoutes } from './routes';
 
+import mercurius from 'mercurius'
+import { schema, resolvers } from './graphql/schema'
+import { createEmployeeLoaders } from './modules/employees/graphql/employees.loaders'
+import './graphql/mercurius-context'
+
 
 export async function createApp() {
   const app = Fastify({
@@ -26,6 +31,15 @@ export async function createApp() {
   app.get('/health', async () => ({ success: true, message: 'hr-service-api is healthy' }));
 
   await app.register(apiRoutes, { prefix: env.API_PREFIX });
+
+  await app.register(mercurius, {
+    schema,
+    resolvers,
+    graphiql: env.NODE_ENV !== 'production',
+    context: async () => ({
+      loaders: createEmployeeLoaders(), // wajib dibuat ULANG tiap request, jangan di-hoist ke luar
+    }),
+  });
 
   return app;
 }
