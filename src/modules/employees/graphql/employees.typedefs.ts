@@ -25,6 +25,17 @@ export const employeeTypeDefs = `
     locationId: Int
   }
 
+  type Dependents{
+    dependentId: Int!
+    firstName: String
+    lastName: String
+    employeeId: Int
+  }
+
+  extend Dependents{
+    employee : Employee!
+  }
+
   type Employee {
     employeeId: Int!
     firstName: String

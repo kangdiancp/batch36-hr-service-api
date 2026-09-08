@@ -33,6 +33,8 @@ export async function createApp() {
 
   await app.register(apiRoutes, { prefix: env.API_PREFIX });
 
+  
+  //mercurius : server graphql
   await app.register(mercurius, {
     schema,
     resolvers: resolvers as any,
