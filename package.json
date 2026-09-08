@@ -29,6 +29,7 @@
     "@fastify/cors": "^11.3.0",
     "@fastify/helmet": "^13.1.0",
     "@fastify/otel": "^0.20.1",
+    "@graphql-tools/merge": "^9.2.4",
     "@opentelemetry/exporter-trace-otlp-http": "^0.221.0",
     "@opentelemetry/instrumentation-http": "^0.221.0",
     "@opentelemetry/instrumentation-pg": "^0.73.0",

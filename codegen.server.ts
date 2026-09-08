@@ -10,6 +10,7 @@ const config: CodegenConfig = {
 
         mappers: {
           Employee: '../../modules/employees/employees.types#EmployeeApiRow',
+          Department: '../../modules/departments/departments.types#DepartmentRow',
         },
 
         avoidOptionals: false,

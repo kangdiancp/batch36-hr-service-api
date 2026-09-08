@@ -9,6 +9,7 @@ import { apiRoutes } from './routes';
 import mercurius from 'mercurius'
 import { schema, resolvers } from './graphql/schema'
 import { createEmployeeLoaders } from './modules/employees/graphql/employees.loaders'
+import { createDepartmentLoaders } from './modules/departments/graphql/departments.loaders';
 import './graphql/mercurius-context'
 
 
@@ -34,10 +35,13 @@ export async function createApp() {
 
   await app.register(mercurius, {
     schema,
-    resolvers,
+    resolvers: resolvers as any,
     graphiql: env.NODE_ENV !== 'production',
     context: async () => ({
-      loaders: createEmployeeLoaders(), // wajib dibuat ULANG tiap request, jangan di-hoist ke luar
+      loaders: {
+        ...createEmployeeLoaders(),
+        ...createDepartmentLoaders(),
+      }
     }),
   });
 

@@ -1,5 +1,6 @@
 import { GraphQLResolveInfo } from 'graphql';
 import { EmployeeApiRow } from '../../modules/employees/employees.types';
+import { DepartmentRow } from '../../modules/departments/departments.types';
 import { MercuriusContext } from 'mercurius';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
@@ -12,6 +13,11 @@ export type Scalars = {
   Boolean: { input: boolean; output: boolean; }
   Int: { input: number; output: number; }
   Float: { input: number; output: number; }
+};
+
+export type CreateDepartmentInput = {
+  departmentName: Scalars['String']['input'];
+  locationId?: InputMaybe<Scalars['Int']['input']>;
 };
 
 export type CreateEmployeeInput = {
@@ -33,7 +39,19 @@ export type Department = {
   __typename?: 'Department';
   departmentId: Scalars['Int']['output'];
   departmentName: Scalars['String']['output'];
+  employees: Array<Employee>;
   locationId?: Maybe<Scalars['Int']['output']>;
+};
+
+export type DepartmentConnection = {
+  __typename?: 'DepartmentConnection';
+  items: Array<Department>;
+  pagination: Pagination;
+};
+
+export type DepartmentFilterInput = {
+  locationId?: InputMaybe<Scalars['Int']['input']>;
+  search?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type Employee = {
@@ -97,9 +115,17 @@ export type Job = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  createDepartment: Department;
   createEmployee: Employee;
+  deleteDepartment: Scalars['Boolean']['output'];
   deleteEmployee: Scalars['Boolean']['output'];
+  updateDepartment: Department;
   updateEmployee: Employee;
+};
+
+
+export type MutationCreateDepartmentArgs = {
+  input: CreateDepartmentInput;
 };
 
 
@@ -108,8 +134,19 @@ export type MutationCreateEmployeeArgs = {
 };
 
 
+export type MutationDeleteDepartmentArgs = {
+  id: Scalars['Int']['input'];
+};
+
+
 export type MutationDeleteEmployeeArgs = {
   id: Scalars['Int']['input'];
+};
+
+
+export type MutationUpdateDepartmentArgs = {
+  id: Scalars['Int']['input'];
+  input: UpdateDepartmentInput;
 };
 
 
@@ -128,8 +165,22 @@ export type Pagination = {
 
 export type Query = {
   __typename?: 'Query';
+  department?: Maybe<Department>;
+  departments: DepartmentConnection;
   employee?: Maybe<Employee>;
   employees: EmployeeConnection;
+};
+
+
+export type QueryDepartmentArgs = {
+  id: Scalars['Int']['input'];
+};
+
+
+export type QueryDepartmentsArgs = {
+  filter?: InputMaybe<DepartmentFilterInput>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  page?: InputMaybe<Scalars['Int']['input']>;
 };
 
 
@@ -142,6 +193,11 @@ export type QueryEmployeesArgs = {
   filter?: InputMaybe<EmployeeFilterInput>;
   limit?: InputMaybe<Scalars['Int']['input']>;
   page?: InputMaybe<Scalars['Int']['input']>;
+};
+
+export type UpdateDepartmentInput = {
+  departmentName?: InputMaybe<Scalars['String']['input']>;
+  locationId?: InputMaybe<Scalars['Int']['input']>;
 };
 
 export type UpdateEmployeeInput = {
@@ -233,8 +289,11 @@ export type DirectiveResolverFn<TResult = Record<PropertyKey, never>, TParent = 
 /** Mapping between all available schema types and the resolvers types */
 export type ResolversTypes = {
   Boolean: ResolverTypeWrapper<Scalars['Boolean']['output']>;
+  CreateDepartmentInput: CreateDepartmentInput;
   CreateEmployeeInput: CreateEmployeeInput;
-  Department: ResolverTypeWrapper<Department>;
+  Department: ResolverTypeWrapper<DepartmentRow>;
+  DepartmentConnection: ResolverTypeWrapper<Omit<DepartmentConnection, 'items'> & { items: Array<ResolversTypes['Department']> }>;
+  DepartmentFilterInput: DepartmentFilterInput;
   Employee: ResolverTypeWrapper<EmployeeApiRow>;
   EmployeeConnection: ResolverTypeWrapper<Omit<EmployeeConnection, 'items'> & { items: Array<ResolversTypes['Employee']> }>;
   EmployeeFilterInput: EmployeeFilterInput;
@@ -247,14 +306,18 @@ export type ResolversTypes = {
   Pagination: ResolverTypeWrapper<Pagination>;
   Query: ResolverTypeWrapper<Record<PropertyKey, never>>;
   String: ResolverTypeWrapper<Scalars['String']['output']>;
+  UpdateDepartmentInput: UpdateDepartmentInput;
   UpdateEmployeeInput: UpdateEmployeeInput;
 };
 
 /** Mapping between all available schema types and the resolvers parents */
 export type ResolversParentTypes = {
   Boolean: Scalars['Boolean']['output'];
+  CreateDepartmentInput: CreateDepartmentInput;
   CreateEmployeeInput: CreateEmployeeInput;
-  Department: Department;
+  Department: DepartmentRow;
+  DepartmentConnection: Omit<DepartmentConnection, 'items'> & { items: Array<ResolversParentTypes['Department']> };
+  DepartmentFilterInput: DepartmentFilterInput;
   Employee: EmployeeApiRow;
   EmployeeConnection: Omit<EmployeeConnection, 'items'> & { items: Array<ResolversParentTypes['Employee']> };
   EmployeeFilterInput: EmployeeFilterInput;
@@ -265,13 +328,20 @@ export type ResolversParentTypes = {
   Pagination: Pagination;
   Query: Record<PropertyKey, never>;
   String: Scalars['String']['output'];
+  UpdateDepartmentInput: UpdateDepartmentInput;
   UpdateEmployeeInput: UpdateEmployeeInput;
 };
 
 export type DepartmentResolvers<ContextType = MercuriusContext, ParentType extends ResolversParentTypes['Department'] = ResolversParentTypes['Department']> = {
   departmentId?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   departmentName?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  employees?: Resolver<Array<ResolversTypes['Employee']>, ParentType, ContextType>;
   locationId?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
+};
+
+export type DepartmentConnectionResolvers<ContextType = MercuriusContext, ParentType extends ResolversParentTypes['DepartmentConnection'] = ResolversParentTypes['DepartmentConnection']> = {
+  items?: Resolver<Array<ResolversTypes['Department']>, ParentType, ContextType>;
+  pagination?: Resolver<ResolversTypes['Pagination'], ParentType, ContextType>;
 };
 
 export type EmployeeResolvers<ContextType = MercuriusContext, ParentType extends ResolversParentTypes['Employee'] = ResolversParentTypes['Employee']> = {
@@ -307,8 +377,11 @@ export type JobResolvers<ContextType = MercuriusContext, ParentType extends Reso
 };
 
 export type MutationResolvers<ContextType = MercuriusContext, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
+  createDepartment?: Resolver<ResolversTypes['Department'], ParentType, ContextType, RequireFields<MutationCreateDepartmentArgs, 'input'>>;
   createEmployee?: Resolver<ResolversTypes['Employee'], ParentType, ContextType, RequireFields<MutationCreateEmployeeArgs, 'input'>>;
+  deleteDepartment?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<MutationDeleteDepartmentArgs, 'id'>>;
   deleteEmployee?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<MutationDeleteEmployeeArgs, 'id'>>;
+  updateDepartment?: Resolver<ResolversTypes['Department'], ParentType, ContextType, RequireFields<MutationUpdateDepartmentArgs, 'id' | 'input'>>;
   updateEmployee?: Resolver<ResolversTypes['Employee'], ParentType, ContextType, RequireFields<MutationUpdateEmployeeArgs, 'id' | 'input'>>;
 };
 
@@ -320,12 +393,15 @@ export type PaginationResolvers<ContextType = MercuriusContext, ParentType exten
 };
 
 export type QueryResolvers<ContextType = MercuriusContext, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
+  department?: Resolver<Maybe<ResolversTypes['Department']>, ParentType, ContextType, RequireFields<QueryDepartmentArgs, 'id'>>;
+  departments?: Resolver<ResolversTypes['DepartmentConnection'], ParentType, ContextType, RequireFields<QueryDepartmentsArgs, 'limit' | 'page'>>;
   employee?: Resolver<Maybe<ResolversTypes['Employee']>, ParentType, ContextType, RequireFields<QueryEmployeeArgs, 'id'>>;
   employees?: Resolver<ResolversTypes['EmployeeConnection'], ParentType, ContextType, RequireFields<QueryEmployeesArgs, 'limit' | 'page'>>;
 };
 
 export type Resolvers<ContextType = MercuriusContext> = {
   Department?: DepartmentResolvers<ContextType>;
+  DepartmentConnection?: DepartmentConnectionResolvers<ContextType>;
   Employee?: EmployeeResolvers<ContextType>;
   EmployeeConnection?: EmployeeConnectionResolvers<ContextType>;
   Job?: JobResolvers<ContextType>;
