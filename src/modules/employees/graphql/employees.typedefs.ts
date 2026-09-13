@@ -32,10 +32,6 @@ export const employeeTypeDefs = `
     employeeId: Int
   }
 
-  extend Dependents{
-    employee : Employee!
-  }
-
   type Employee {
     employeeId: Int!
     firstName: String
