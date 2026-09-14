@@ -30,8 +30,8 @@ function toGrpcError(err: unknown) {
 }
 
 export async function getEmployee(
-  call: ServerUnaryCall<{ employee_id: number }, unknown>,
-  callback: sendUnaryData<ReturnType<typeof toGrpcResponse>>,
+  call: ServerUnaryCall<{ employee_id: number }, unknown>, //request
+  callback: sendUnaryData<ReturnType<typeof toGrpcResponse>>, //response
 ) {
   try {
     const employee = await employeeService.getEmployeeById(call.request.employee_id);
@@ -40,7 +40,7 @@ export async function getEmployee(
     callback(toGrpcError(err) as any, null);
   }
 }
-
+/* 
 export async function getEmployeesForPayroll(
   call: ServerWritableStream<{ department_id: number; employment_status: string }, unknown>,
 ) {
@@ -64,6 +64,49 @@ export async function getEmployeesForPayroll(
       if (page >= pagination.totalPages) break;
       page++;
     }
+    call.end();
+  } catch (err) {
+    call.emit('error', toGrpcError(err));
+  }
+} */
+
+  
+export async function getEmployeesForPayroll(
+  call: ServerWritableStream<{ department_id: number; employment_status: string }, unknown>,
+) {
+  try {
+    let page = 1;
+    const limit = 15;
+    const maxRecords = 100;
+    let totalSent = 0;
+
+    const { department_id, employment_status } = call.request;
+
+    while (totalSent < maxRecords) {
+      const currentLimit = Math.min(limit, maxRecords - totalSent);
+
+      const { items, pagination } = await employeeService.listEmployees({
+        page,
+        limit: currentLimit,
+        departmentId: department_id || undefined,
+        employmentStatus: (employment_status || undefined) as any,
+      });
+
+      if (!items || items.length === 0) break;
+
+      for (const item of items) {
+        if (call.cancelled) return;
+
+        call.write(toGrpcResponse(item));
+        totalSent++;
+
+        if (totalSent >= maxRecords) break;
+      }
+
+      if (page >= pagination.totalPages) break;
+      page++;
+    }
+
     call.end();
   } catch (err) {
     call.emit('error', toGrpcError(err));

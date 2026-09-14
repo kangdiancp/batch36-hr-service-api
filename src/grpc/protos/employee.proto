@@ -7,6 +7,8 @@ package hr;
 service EmployeeService {
   rpc GetEmployee(GetEmployeeRequest) returns (EmployeeResponse);
   rpc GetEmployeesForPayroll(GetEmployeesForPayrollRequest) returns (stream EmployeeResponse);
+
+  rpc ListDepartments(ListDepartmentsRequest) returns (stream DepartmentResponse);
 }
 
 message GetEmployeesForPayrollRequest {
@@ -32,4 +34,13 @@ message EmployeeResponse {
   string employment_type = 9;
   string hire_date = 10;
   string updated_at = 11;
+}
+
+//request
+message ListDepartmentsRequest {}
+
+//response
+message DepartmentResponse {
+  int32 department_id = 1;
+  string department_name = 2;
 }
